@@ -33,15 +33,6 @@ import tacos.data.TacoRepository;
 @SessionAttributes("order")
 public class DesignTacoController {
 	
-	private final IngredientRepository ingredientRepo;
-	private TacoRepository tacoRepo;
-	
-	@Autowired
-	public DesignTacoController(IngredientRepository ingredientRepo, 
-			TacoRepository tacoRepo) {
-		this.ingredientRepo = ingredientRepo;
-		this.tacoRepo = tacoRepo;
-	}
 	
 	@ModelAttribute(name = "order")
 	public Order order() {
@@ -53,6 +44,17 @@ public class DesignTacoController {
 		return new Taco();
 	}
 	
+	
+	private final IngredientRepository ingredientRepo;
+	private TacoRepository tacoRepo;
+	
+	@Autowired
+	public DesignTacoController(IngredientRepository ingredientRepo, 
+			TacoRepository tacoRepo) {
+		this.ingredientRepo = ingredientRepo;
+		this.tacoRepo = tacoRepo;
+	}
+
 	@GetMapping
 	public String showDesignForm(Model model) {
 		
