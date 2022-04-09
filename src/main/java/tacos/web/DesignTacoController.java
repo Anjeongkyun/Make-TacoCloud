@@ -27,7 +27,6 @@ import tacos.data.TacoRepository;
 
 //자동으로 logger를 생성한다.
 //private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DesignTacoController.class).; 와 같다.
-@Slf4j
 @Controller
 @RequestMapping("/design")
 @SessionAttributes("order")
