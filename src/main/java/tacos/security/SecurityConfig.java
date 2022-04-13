@@ -49,6 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authoritiesByUsernameQuery(
 					"select username, authority from authorities " +
 					" where username = ?")
-			.passwordEncoder(new BCryptPasswordEncoder()); // BCryptoPasswordEncoder : bcrypt를 해싱 암호화한다.
+			.passwordEncoder(new NoEncodingPasswordEncoder()); // BCryptoPasswordEncoder : bcrypt를 해싱 암호화한다.
 	}
 }
