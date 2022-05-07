@@ -2,10 +2,11 @@ package tacos.web;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Order;
+import tacos.User;
 import tacos.data.OrderRepository;
 
 @Slf4j
@@ -28,22 +30,38 @@ public class OrderController {
 	}
 	
 	@GetMapping("/current")
-	public String orderForm() {
+	public String orderForm(@AuthenticationPrincipal User user,
+			@ModelAttribute Order order) {
+		if (order.getDeliveryName() == null) {
+			order.setDeliveryName(user.getFullname());
+		}
+		if (order.getDeliveryStreet() == null) {
+			order.setDeliveryStreet(user.getStreet());
+		}
+		if (order.getDeliveryCity() == null) {
+			order.setDeliveryCity(user.getCity());
+		}
+		if (order.getDeliveryState() == null) {
+			order.setDeliveryState(user.getState());
+		}
+		if (order.getDeliveryZip() == null) {
+			order.setDeliveryZip(user.getZip());
+		}
 		return "orderForm";
 	}
 	
 	@PostMapping
-	public String processOrder(@Valid Order order, Errors errors
-			,SessionStatus sessionStatus) {
-		if(errors.hasErrors()) {
+	public String processOrder(@Valid Order order, Errors errors, SessionStatus sessionStatus
+							, @AuthenticationPrincipal User user) {
+		if (errors.hasErrors()) {
 			return "orderForm";
 		}
 		
+		order.setUser(user);
+		
 		orderRepo.save(order);
-		// session 재설정, 
-		// 만약 재설정하지 않으면 이전 주문 및 연관된 타코가 세션에 남아있게되어 
-		// 다음 주문에 포함되었던 타코 객체들을 가지고 시작할 수있다.
 		sessionStatus.setComplete();
+		
 		return "redirect:/";
 	}
 }

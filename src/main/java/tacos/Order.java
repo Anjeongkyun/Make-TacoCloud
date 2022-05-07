@@ -1,9 +1,9 @@
 package tacos;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.CreditCardNumber;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,38 +12,29 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
-import org.hibernate.validator.constraints.CreditCardNumber;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
+import java.util.Date;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
-//Order 개체가 db의 Taco_Order 테이블에 저장되어야 한다는 것을 나타낸다.
-//Order라는 테이블이 이미 있기때문에 다른 테이블로 지정하기위해선
-//반드시 지금처럼 선언해줘야한다.
 @Table(name="Taco_Order")
 public class Order implements Serializable {
 	
-	public void addDesign(Taco design) {
-		this.tacos.add(design);
-	}
-	
 	private static final long serialVersionUID = 1L;
-	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
 	private Date placedAt;
 	
-	@PrePersist
-	void placedAt() {
-		this.placedAt = new Date();
-	}
+	@ManyToOne
+	private User user;
 	
 	@NotBlank(message="Name is required")
 	private String deliveryName;
@@ -69,10 +60,16 @@ public class Order implements Serializable {
 	
 	@Digits(integer=3, fraction=0, message="Invalid CVV")
 	private String ccCVV;
-
-	@ManyToMany(targetEntity = Taco.class)
-	private List<Taco> tacos = new ArrayList<>();	
-
-
 	
+	@ManyToMany(targetEntity=Taco.class)
+	private List<Taco> tacos = new ArrayList<>();
+	
+	public void addDesign(Taco design) {
+		this.tacos.add(design);
+	}
+	
+	@PrePersist
+	void placedAt() {
+		this.placedAt = new Date();
+	}
 }
