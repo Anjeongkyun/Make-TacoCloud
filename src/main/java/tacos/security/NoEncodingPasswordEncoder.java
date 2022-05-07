@@ -2,17 +2,17 @@ package tacos.security;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class NoEncodingPasswordEncoder implements PasswordEncoder{
+import tacos.security.NoEncodingPasswordEncoder;
 
-	@Override
-	public String encode(CharSequence rawPassword) {
-		return rawPassword.toString();
-	}
-
-	@Override
-	public boolean matches(CharSequence rawPassword, String encodedPassword) {
-		return rawPassword.toString().equals(encodedPassword);
-	}
-
+public class NoEncodingPasswordEncoder implements PasswordEncoder {
 	
+	@Override
+	public String encode(CharSequence rawPwd) {
+		return rawPwd.toString();
+	}
+	
+	@Override
+	public boolean matches(CharSequence rawPwd, String encodedPwd) {
+		return rawPwd.toString().equals(encodedPwd);
+	}
 }
